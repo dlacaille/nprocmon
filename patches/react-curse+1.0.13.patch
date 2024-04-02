@@ -1,0 +1,14 @@
+diff --git a/node_modules/react-curse/index.js b/node_modules/react-curse/index.js
+index 5be6252..ac3cb0b 100644
+--- a/node_modules/react-curse/index.js
++++ b/node_modules/react-curse/index.js
+@@ -199,8 +199,8 @@ var Term = class {
+     });
+     process.on("exit", this.onExit);
+     if (fullscreen) {
+-      this.append(`${ESC}[?1049h`);
+       this.append(`${ESC}c`);
++      this.append(`${ESC}[?1049h`);
+     }
+     this.append(`${ESC}[?25l`);
+   }

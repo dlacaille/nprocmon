@@ -1,0 +1,6 @@
+procs:
+  - name: HelloWorld
+    autostart: false
+    cmd: ['cmd.exe', 'echo', 'hello', 'world!']
+  - name: nvim
+    cmd: 'nvim.exe'

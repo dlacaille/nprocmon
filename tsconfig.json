@@ -1,0 +1,14 @@
+{
+    "compilerOptions": {
+        "target": "es2020",
+        "jsx": "preserve",
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "strictNullChecks": true,
+        "module": "nodenext",
+        "moduleResolution": "bundler",
+        "outDir": "dist",
+    },
+    "include": ["src"],
+    "exclude": ["node_modules"],
+}
