@@ -13,7 +13,7 @@ const cli = meow(
 
     Options
       --config       The configuration file to use
-      --no-auto, -n  Disable autorun for all processes
+      --no-auto      Disable autorun for all processes
 
     Examples
       $ nprocmon --config=./nprocmon.yaml
@@ -26,7 +26,6 @@ const cli = meow(
             },
             auto: {
                 type: 'boolean',
-                shortFlag: 'n',
                 default: true,
             },
         },
