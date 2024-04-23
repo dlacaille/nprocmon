@@ -13,12 +13,16 @@ const processWidth = 50
 
 type Props = {
     readonly configFile: string | undefined
-    readonly isAutorun?: boolean
+    readonly autorun?: boolean
+    readonly deps?: boolean
+    readonly exclude?: string[]
 }
 
 export default function Main({
     configFile = 'nprocmon.yaml',
-    isAutorun,
+    autorun,
+    deps,
+    exclude,
 }: Props) {
     const [selectedIndex, setSelectedIndex] = useState(0)
     const config = useConfig()
@@ -31,8 +35,8 @@ export default function Main({
     const { width, height } = useSize()
 
     useEffect(() => {
-        if (configFile) dispatch(loadConfig(configFile))
-    }, [configFile, dispatch, isAutorun])
+        if (configFile) dispatch(loadConfig({ config: configFile, exclude }))
+    }, [configFile, dispatch])
 
     useLayoutEffect(() => {
         process.stdout.write('\u001b[?25l')
@@ -48,7 +52,8 @@ export default function Main({
                     height={height - 2}
                     selected={selected}
                     setSelectedIndex={setSelectedIndex}
-                    isAutorun={isAutorun}
+                    autorun={autorun}
+                    deps={deps}
                 />
                 <LogMonitor
                     width={width - processWidth}

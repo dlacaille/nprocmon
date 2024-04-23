@@ -1,5 +1,5 @@
 import os from 'node:os'
-import { spawn } from 'node-pty'
+import { spawn } from '@lydell/node-pty'
 import kill from 'tree-kill'
 import type {
     AppConfig,
@@ -44,7 +44,9 @@ export default function processManagerService(
         return size[1]
     }
 
-    async function startAllAutostart() {
+    async function startAllAutostart(
+        opts: { skipDependencies?: boolean } = {},
+    ) {
         const autostartProcs = Object.entries(config.procs).filter(
             ([_id, proc]) => proc.autostart,
         )
@@ -57,7 +59,7 @@ export default function processManagerService(
             autostartProcs.map(
                 ([id, proc]) =>
                     async () =>
-                        startProcess(id, proc),
+                        startProcess(id, proc, opts),
             ),
         )
     }
@@ -187,10 +189,14 @@ export default function processManagerService(
     async function startProcess(
         id: ProcessId,
         proc: ProcessConfig,
-        opts: { isRestart?: boolean; isDependency?: boolean } = {},
+        opts: {
+            isRestart?: boolean
+            isDependency?: boolean
+            skipDependencies?: boolean
+        } = {},
     ) {
         try {
-            const { isRestart, isDependency } = opts
+            const { isRestart, isDependency, skipDependencies } = opts
             const { cwd, env, inheritEnv, delay, deps, wait } = proc
             const { procs } = config
 
@@ -206,8 +212,10 @@ export default function processManagerService(
 
             // Get dependencies
             const depsArray: string[] = []
-            if (deps && Array.isArray(deps)) depsArray.push(...deps)
-            else if (deps) depsArray.push(deps)
+            if (!skipDependencies) {
+                if (deps && Array.isArray(deps)) depsArray.push(...deps)
+                else if (deps) depsArray.push(deps)
+            }
 
             // Signal that the process is starting
             dispatch(

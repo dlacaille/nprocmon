@@ -14,15 +14,33 @@ const cli = meow(
     Options
       --config       The configuration file to use
       --no-auto      Disable autorun for all processes
+      --no-deps      Disable dependencies
+      --exclude, -e  Exclude processes that match this pattern (supports wildcards)
 
     Examples
-      $ nprocmon --config=./nprocmon.yaml
+      $ nprocmon
+      Will open nprocmon with the default config nprocmon.yaml
+
+      $ nprocmon --config=./myconfig.yaml
+      Will open nprocmon with a different config file
+
+      $ nprocmon -e build*
+      Excludes all processes starting with Build
     `,
     {
         importMeta: import.meta,
         flags: {
             config: {
                 type: 'string',
+            },
+            exclude: {
+                type: 'string',
+                shortFlag: 'e',
+                isMultiple: true,
+            },
+            deps: {
+                type: 'boolean',
+                default: true,
             },
             auto: {
                 type: 'boolean',
@@ -34,6 +52,11 @@ const cli = meow(
 
 ReactCurse.render(
     <Provider store={store}>
-        <Main isAutorun={cli.flags.auto} configFile={cli.flags.config} />
+        <Main
+            autorun={cli.flags.auto}
+            configFile={cli.flags.config}
+            exclude={cli.flags.exclude}
+            deps={cli.flags.deps}
+        />
     </Provider>,
 )

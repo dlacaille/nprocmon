@@ -8,7 +8,8 @@ import useAppSelector from '../hooks/use-app-selector.js'
 import { useProcessManager } from '../hooks/use-process-manager.jsx'
 
 type Props = {
-    readonly isAutorun?: boolean
+    readonly autorun?: boolean
+    readonly deps?: boolean
     readonly width: number
     readonly height: number
     readonly selected: string
@@ -16,7 +17,8 @@ type Props = {
 }
 
 export default function ProcessSelector({
-    isAutorun,
+    autorun,
+    deps,
     width,
     height,
     selected,
@@ -31,15 +33,17 @@ export default function ProcessSelector({
     )
 
     useEffect(() => {
-        if (!isAutorun) return
+        if (!autorun) return
 
-        startAllAutostart()
-    }, [config, isAutorun, startAllAutostart])
+        startAllAutostart({ skipDependencies: !deps })
+    }, [config, autorun, startAllAutostart])
 
     useMappings(
         {
             procsStartSelected() {
-                startProcess(selected, config.procs[selected])
+                startProcess(selected, config.procs[selected], {
+                    skipDependencies: !deps,
+                })
             },
         },
         {

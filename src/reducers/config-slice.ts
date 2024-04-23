@@ -3,6 +3,7 @@ import { createSlice } from '@reduxjs/toolkit'
 import type { PayloadAction } from '@reduxjs/toolkit'
 import type { AppConfig, ProcessConfig } from '../types/types.js'
 import YAML from 'yaml'
+import wildcardRegex from '../utils/wildcard-regex.js'
 
 export const processConfigDefaults: Partial<ProcessConfig> = {
     inheritEnv: true,
@@ -19,11 +20,17 @@ export const configSlice = createSlice({
         setConfig(_state, action: PayloadAction<AppConfig>) {
             return action.payload
         },
-        loadConfig(_state, action: PayloadAction<string>) {
-            const data = fs.readFileSync(action.payload, 'utf8')
+        loadConfig(
+            _state,
+            action: PayloadAction<{ config: string; exclude?: string[] }>,
+        ) {
+            const { config, exclude } = action.payload
+            const data = fs.readFileSync(config, 'utf8')
             const parsed = YAML.parse(data) as AppConfig
             const procs = {}
+            const excludeRegex = exclude?.map((e) => wildcardRegex(e))
             for (const [id, config] of Object.entries(parsed.procs)) {
+                if (excludeRegex?.some((r) => r.test(id))) continue
                 procs[id] = {
                     ...processConfigDefaults,
                     ...config,
