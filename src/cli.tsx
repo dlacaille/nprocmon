@@ -25,7 +25,7 @@ const cli = meow(
       Will open nprocmon with a different config file
 
       $ nprocmon -e build*
-      Excludes all processes starting with Build
+      Excludes all processes starting with build
     `,
     {
         importMeta: import.meta,

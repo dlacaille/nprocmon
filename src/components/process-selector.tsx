@@ -81,6 +81,12 @@ export default function ProcessSelector({
             navigationDown() {
                 setSelectedIndex((s) => (s + 1) % processes.length)
             },
+            procsStartAll() {
+                startAllAutostart({ skipDependencies: !deps })
+            },
+            procsExitAll() {
+                stopAll()
+            },
             appExit() {
                 stopAll().then(() => {
                     process.stdout.write('\u001bc')
