@@ -1,4 +1,4 @@
-# nprocmon
+# nprocmon [![npm version](https://img.shields.io/npm/v/nprocmon.svg?style=flat)](https://www.npmjs.com/package/nprocmon)
 
 Execute multiple tasks in parallel and start, stop, or restart them easily using a TUI interface and keyboard shortcuts.
 
