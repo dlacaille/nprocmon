@@ -19,7 +19,16 @@ Usage
 Options
   --config       The configuration file to use
   --no-auto      Disable autorun for all processes
+  --no-deps      Disable dependencies
+  --exclude, -e  Exclude processes that match this pattern (supports wildcards)
 
 Examples
-  $ nprocmon --config=./nprocmon.yaml
+  $ nprocmon
+  Will open nprocmon with the default config nprocmon.yaml
+
+  $ nprocmon --config=./myconfig.yaml
+  Will open nprocmon with a different config file
+
+  $ nprocmon -e build*
+  Excludes all processes starting with build
 ```
