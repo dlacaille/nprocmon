@@ -48,7 +48,7 @@ export default function ProcessSelector({
         },
         {
             isActive:
-                isFocused && (!selectedStatus || selectedStatus === 'exit'),
+                isFocused && (!selectedStatus || selectedStatus !== 'running'),
         },
     )
 
