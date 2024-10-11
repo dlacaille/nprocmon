@@ -159,12 +159,7 @@ export default function processManagerService(
         dispatch(processExiting(id))
 
         // Kill the process
-        return new Promise((resolve, reject) => {
-            kill(pid, (error) => {
-                if (error) reject(error)
-                else resolve(error)
-            })
-        })
+        return new Promise((resolve) => kill(pid, resolve))
     }
 
     function onExit(id: ProcessId, exitCode: number, signal?: number) {
