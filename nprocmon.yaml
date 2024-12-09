@@ -1,6 +1,8 @@
+options:
+  exitWhenAllStopped: 'onSuccess'
 procs:
   - name: HelloWorld
-    autostart: false
+    autostart: true
     cmd: ['cmd.exe', 'echo', 'hello', 'world!']
   - name: nvim
     cmd: 'nvim.exe'

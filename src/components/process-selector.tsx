@@ -6,6 +6,10 @@ import { Frame, Text } from 'react-curse'
 import useFocus from '../hooks/use-focus.jsx'
 import useAppSelector from '../hooks/use-app-selector.js'
 import { useProcessManager } from '../hooks/use-process-manager.jsx'
+import {
+    StartableProcessStatuses,
+    StoppableProcessStatuses,
+} from '../types/types.js'
 
 type Props = {
     readonly autorun?: boolean
@@ -31,6 +35,16 @@ export default function ProcessSelector({
     const selectedStatus = useAppSelector(
         (state) => state.processes.processes[selected]?.status,
     )
+    const isSelectedStartable = useMemo(
+        () => StartableProcessStatuses.includes(selectedStatus),
+        [selectedStatus],
+    )
+    const isSelectedStoppable = useMemo(
+        () =>
+            !selectedStatus ||
+            StoppableProcessStatuses.includes(selectedStatus),
+        [selectedStatus],
+    )
 
     useEffect(() => {
         if (!autorun) return
@@ -47,8 +61,7 @@ export default function ProcessSelector({
             },
         },
         {
-            isActive:
-                isFocused && (!selectedStatus || selectedStatus !== 'running'),
+            isActive: isFocused && isSelectedStartable,
         },
     )
 
@@ -61,7 +74,7 @@ export default function ProcessSelector({
                 focus('log')
             },
         },
-        { isActive: isFocused && selectedStatus === 'running' },
+        { isActive: isFocused && isSelectedStoppable },
     )
 
     const processes = useMemo(

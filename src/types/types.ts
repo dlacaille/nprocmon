@@ -49,8 +49,13 @@ export type ProcessEventListeners = {
     onScroll: Array<EventListener<{ top: number; bottom: number }>>
 }
 
+export type AppOptions = {
+    exitWhenAllStopped?: 'always' | 'onSuccess' | false
+}
+
 export type AppConfig = {
     readonly procs: Record<ProcessId, ProcessConfig>
+    readonly options?: AppOptions
 }
 
 export type ProcessStatus =
@@ -62,6 +67,15 @@ export type ProcessStatus =
     | 'waiting'
     | 'exit'
     | 'error'
+
+export const StartableProcessStatuses: ProcessStatus[] = [
+    'delayed',
+    'waiting',
+    'exit',
+    'error',
+]
+
+export const StoppableProcessStatuses: ProcessStatus[] = ['running']
 
 export type ProcessState = {
     readonly status: ProcessStatus

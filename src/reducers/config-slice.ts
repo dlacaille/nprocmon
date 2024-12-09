@@ -39,6 +39,7 @@ export const configSlice = createSlice({
 
             return {
                 procs,
+                options: parsed.options,
             }
         },
     },

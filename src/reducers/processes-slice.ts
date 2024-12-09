@@ -1,8 +1,9 @@
 import { createSlice } from '@reduxjs/toolkit'
-import type {
-    ProcessId,
-    ProcessManagerState,
-    ProcessStatus,
+import {
+    StartableProcessStatuses,
+    type ProcessId,
+    type ProcessManagerState,
+    type ProcessStatus,
 } from '../types/types.js'
 import type { PayloadAction } from '@reduxjs/toolkit'
 

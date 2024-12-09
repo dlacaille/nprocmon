@@ -1,16 +1,17 @@
 import os from 'node:os'
 import { spawn } from '@lydell/node-pty'
 import kill from 'tree-kill'
-import type {
-    AppConfig,
-    Disposable,
-    Process,
-    ProcessConfig,
-    ProcessId,
-    EventListener,
-    ProcessBuffer,
-    ProcessEventListeners,
-    InferFromArray,
+import {
+    type AppConfig,
+    type Disposable,
+    type Process,
+    type ProcessConfig,
+    type ProcessId,
+    type EventListener,
+    type ProcessBuffer,
+    type ProcessEventListeners,
+    type InferFromArray,
+    StartableProcessStatuses,
 } from '../types/types.js'
 import xterm from 'xterm-headless'
 import terminalSerializer from '../utils/terminal-serializer-curse.js'
@@ -163,7 +164,7 @@ export default function processManagerService(
     }
 
     function onExit(id: ProcessId, exitCode: number, signal?: number) {
-        const { isStopped, config } = getProcess(id) ?? {}
+        const { isStopped, config: processConfig } = getProcess(id) ?? {}
 
         // Signal that the process is exited
         dispatch(
@@ -177,7 +178,24 @@ export default function processManagerService(
 
         // Restart the process if it has a restart policy
         if (shouldRestartProcess(id)) {
-            startProcess(id, config, { isRestart: true })
+            startProcess(id, processConfig, { isRestart: true })
+        }
+
+        // When the processes are all exited we might want to exit ourselves
+        const { exitWhenAllStopped } = config.options || {}
+        if (exitWhenAllStopped) {
+            const runningProcesses = Object.keys(processes).filter(
+                (id) => processes[id].handle,
+            )
+            if (runningProcesses.length === 0) {
+                const hasErrors = Object.keys(processes).some(
+                    (id) => (processes[id].exitCode || 0) !== 0,
+                )
+                if (!hasErrors || exitWhenAllStopped === 'always') {
+                    process.stdout.write('\u001bc')
+                    process.exit(0)
+                }
+            }
         }
     }
 
