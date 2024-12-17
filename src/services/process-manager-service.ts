@@ -256,7 +256,8 @@ export default function processManagerService(
 
             const cmdArray = Array.isArray(proc.cmd) ? proc.cmd : [proc.cmd]
             const cmd = cmdArray[0]
-            const args = [...cmdArray.slice(1), ...input]
+            const args = cmdArray.slice(1)
+            if (!proc.ignoreParams) args.push(...input)
 
             const child = spawn(cmd, args, {
                 ...getDefaultOptions(),
@@ -379,7 +380,7 @@ export default function processManagerService(
         if (!processEvents[id]) {
             console.log('no process with id ' + id)
             return {
-                dispose() { },
+                dispose() {},
             }
         }
 

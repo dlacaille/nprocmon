@@ -15,6 +15,7 @@ export type ProcessConfig = {
     readonly shell?: string
     readonly wait?: boolean
     readonly autostart?: boolean
+    readonly ignoreParams?: boolean
     readonly env?: NodeJS.ProcessEnv
     readonly inheritEnv?: boolean
     readonly restart: RestartType
