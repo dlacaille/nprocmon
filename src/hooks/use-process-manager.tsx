@@ -1,17 +1,6 @@
-import processManagerService, {
-    type ProcessManagerService,
-} from '../services/process-manager-service.js'
-import useAppDispatch from './use-app-dispatch.js'
-import useConfig from './use-config.js'
-
-let processManagerSingleton: ProcessManagerService | undefined
+import { useContext } from 'react'
+import { ProcessManagerContext } from '../context/process-manager-context'
 
 export function useProcessManager() {
-    const config = useConfig()
-    const dispatch = useAppDispatch()
-
-    if (!processManagerSingleton)
-        processManagerSingleton = processManagerService(config, dispatch)
-
-    return processManagerSingleton
+    return useContext(ProcessManagerContext)!
 }

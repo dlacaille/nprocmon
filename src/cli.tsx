@@ -12,10 +12,11 @@ const cli = meow(
       $ nprocmon
 
     Options
-      --config       The configuration file to use
+      --config, -c   The configuration file to use
       --no-auto      Disable autorun for all processes
       --no-deps      Disable dependencies
       --exclude, -e  Exclude processes that match this pattern (supports wildcards)
+      --param, -p    Add extra parameters to every command
 
     Examples
       $ nprocmon
@@ -26,12 +27,16 @@ const cli = meow(
 
       $ nprocmon -e build*
       Excludes all processes starting with build
+
+      $ nprocmon -p=--no-build
+      Adds a parameter to all commands
     `,
     {
         importMeta: import.meta,
         flags: {
             config: {
                 type: 'string',
+                shortFlag: 'c',
             },
             exclude: {
                 type: 'string',
@@ -46,6 +51,11 @@ const cli = meow(
                 type: 'boolean',
                 default: true,
             },
+            param: {
+                type: 'string',
+                shortFlag: 'p',
+                isMultiple: true,
+            },
         },
     },
 )
@@ -57,6 +67,7 @@ ReactCurse.render(
             configFile={cli.flags.config}
             exclude={cli.flags.exclude}
             deps={cli.flags.deps}
+            input={cli.flags.param}
         />
     </Provider>,
 )

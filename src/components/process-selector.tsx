@@ -18,6 +18,7 @@ type Props = {
     readonly height: number
     readonly selected: string
     setSelectedIndex(value: number | ((value: number) => void)): void
+    readonly input?: string[]
 }
 
 export default function ProcessSelector({
@@ -36,13 +37,14 @@ export default function ProcessSelector({
         (state) => state.processes.processes[selected]?.status,
     )
     const isSelectedStartable = useMemo(
-        () => StartableProcessStatuses.includes(selectedStatus),
+        () =>
+            !selectedStatus ||
+            StartableProcessStatuses.includes(selectedStatus),
         [selectedStatus],
     )
     const isSelectedStoppable = useMemo(
         () =>
-            !selectedStatus ||
-            StoppableProcessStatuses.includes(selectedStatus),
+            selectedStatus && StoppableProcessStatuses.includes(selectedStatus),
         [selectedStatus],
     )
 
@@ -103,7 +105,7 @@ export default function ProcessSelector({
             appExit() {
                 stopAll().then(() => {
                     process.stdout.write('\u001bc')
-                    process.exit(0)
+                    process.exit(1) // Exit code is always 1 since we are killing the processes
                 })
             },
         },

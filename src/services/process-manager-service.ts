@@ -11,7 +11,6 @@ import {
     type ProcessBuffer,
     type ProcessEventListeners,
     type InferFromArray,
-    StartableProcessStatuses,
 } from '../types/types.js'
 import xterm from 'xterm-headless'
 import terminalSerializer from '../utils/terminal-serializer-curse.js'
@@ -29,6 +28,7 @@ import { EventManager } from '../utils/event-manager.js'
 export default function processManagerService(
     config: AppConfig,
     dispatch: AppDispatch,
+    input: string[] = [],
 ) {
     let size: [number, number] = [100, 100]
     const processes: Record<ProcessId, Process> = {}
@@ -256,7 +256,7 @@ export default function processManagerService(
 
             const cmdArray = Array.isArray(proc.cmd) ? proc.cmd : [proc.cmd]
             const cmd = cmdArray[0]
-            const args = cmdArray.slice(1)
+            const args = [...cmdArray.slice(1), ...input]
 
             const child = spawn(cmd, args, {
                 ...getDefaultOptions(),
@@ -379,7 +379,7 @@ export default function processManagerService(
         if (!processEvents[id]) {
             console.log('no process with id ' + id)
             return {
-                dispose() {},
+                dispose() { },
             }
         }
 

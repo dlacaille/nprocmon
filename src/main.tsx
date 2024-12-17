@@ -8,6 +8,7 @@ import { MappingProvider } from './hooks/use-mappings.jsx'
 import { FocusProvider } from './hooks/use-focus.jsx'
 import MappingsDisplay from './components/mappings-display.jsx'
 import useConfig from './hooks/use-config.js'
+import ProcessManagerProvider from './context/process-manager-context.jsx'
 
 const processWidth = 50
 
@@ -16,6 +17,7 @@ type Props = {
     readonly autorun?: boolean
     readonly deps?: boolean
     readonly exclude?: string[]
+    readonly input?: string[]
 }
 
 export default function Main({
@@ -23,6 +25,7 @@ export default function Main({
     autorun,
     deps,
     exclude,
+    input,
 }: Props) {
     const [selectedIndex, setSelectedIndex] = useState(0)
     const config = useConfig()
@@ -47,19 +50,22 @@ export default function Main({
     return (
         <MappingProvider>
             <FocusProvider>
-                <ProcessSelector
-                    width={processWidth}
-                    height={height - 2}
-                    selected={selected}
-                    setSelectedIndex={setSelectedIndex}
-                    autorun={autorun}
-                    deps={deps}
-                />
-                <LogMonitor
-                    width={width - processWidth}
-                    height={height - 2}
-                    selected={selected}
-                />
+                <ProcessManagerProvider input={input}>
+                    <ProcessSelector
+                        width={processWidth}
+                        height={height - 2}
+                        selected={selected}
+                        setSelectedIndex={setSelectedIndex}
+                        autorun={autorun}
+                        deps={deps}
+                        input={input}
+                    />
+                    <LogMonitor
+                        width={width - processWidth}
+                        height={height - 2}
+                        selected={selected}
+                    />
+                </ProcessManagerProvider>
             </FocusProvider>
             <MappingsDisplay />
         </MappingProvider>
