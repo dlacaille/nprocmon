@@ -13,7 +13,7 @@ import ProcessManagerProvider from './context/process-manager-context.jsx'
 const processWidth = 50
 
 type Props = {
-    readonly configFile: string | undefined
+    readonly configFile: string
     readonly autorun?: boolean
     readonly deps?: boolean
     readonly exclude?: string[]
@@ -21,7 +21,7 @@ type Props = {
 }
 
 export default function Main({
-    configFile = 'nprocmon.yaml',
+    configFile,
     autorun,
     deps,
     exclude,

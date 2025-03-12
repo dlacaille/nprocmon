@@ -59,6 +59,10 @@ export type AppConfig = {
     readonly options?: AppOptions
 }
 
+export type LockFile = {
+    readonly pid: number
+}
+
 export type ProcessStatus =
     | 'starting'
     | 'stopping'

@@ -1,10 +1,12 @@
 #!/usr/bin/env node
 import React from 'react'
 import ReactCurse from 'react-curse'
+import fs from 'node:fs'
 import meow from 'meow'
 import Main from './main.js'
 import { store } from './store.js'
 import { Provider } from 'react-redux'
+import { checkOrCreateLockFile } from './utils/lockfile.js'
 
 const cli = meow(
     `
@@ -60,11 +62,30 @@ const cli = meow(
     },
 )
 
+// Check for config file
+var configFiles = cli.flags.config
+    ? [cli.flags.config]
+    : ['nprocmon.yaml', 'nprocmon.yml', '.nprocmon.yaml', '.nprocmon.yml']
+var configFile = configFiles.find((file) => fs.existsSync(file!))
+if (!configFile) {
+    console.error(
+        'None of the following files could be found in current directory: ' +
+            configFiles.join(', '),
+    )
+    process.exit(2)
+}
+
+// Check for lockfile
+checkOrCreateLockFile(configFile)
+
+// Set title
+process.title = 'nprocmon - ' + configFile
+
 ReactCurse.render(
     <Provider store={store}>
         <Main
             autorun={cli.flags.auto}
-            configFile={cli.flags.config}
+            configFile={configFile}
             exclude={cli.flags.exclude}
             deps={cli.flags.deps}
             input={cli.flags.param}
