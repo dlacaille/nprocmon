@@ -12,7 +12,6 @@ export type ProcessConfig = {
     readonly deps: string[] | string
     readonly cwd?: string
     readonly timeout?: number
-    readonly shell?: string
     readonly wait?: boolean
     readonly autostart?: boolean
     readonly ignoreParams?: boolean

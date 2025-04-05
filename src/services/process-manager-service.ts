@@ -84,7 +84,6 @@ export default function processManagerService(
         const [cols, rows] = size
         return {
             name: 'xterm-color',
-            shell: os.platform() === 'win32' ? 'cmd.exe' : 'bash',
             cwd: process.cwd,
             cols,
             rows,
