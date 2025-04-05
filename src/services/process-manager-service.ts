@@ -24,6 +24,7 @@ import {
 } from '../reducers/processes-slice.js'
 import { chainUntilSettled } from '../utils/chain-until-settled.js'
 import { EventManager } from '../utils/event-manager.js'
+import open from 'open'
 
 export default function processManagerService(
     config: AppConfig,
@@ -209,7 +210,16 @@ export default function processManagerService(
     ) {
         try {
             const { isRestart, isDependency, skipDependencies } = opts
-            const { cwd, env, inheritEnv, delay, deps, wait } = proc
+            const {
+                cwd,
+                env,
+                inheritEnv,
+                delay,
+                deps,
+                wait,
+                launch,
+                launchDelay,
+            } = proc
             const { procs } = config
 
             // Do not start again if already started
@@ -358,6 +368,14 @@ export default function processManagerService(
 
                 // Signal that the process is running
                 dispatch(processRunning({ id, handle: child.pid }))
+
+                // Launch if needed
+                if (launch) {
+                    setTimeout(() => {
+                        // Check if process is running
+                        if (childProcess.handle) open(launch)
+                    }, launchDelay || 0)
+                }
 
                 // No need to wait, process is started, we can resolve.
                 if (!wait) {

@@ -18,6 +18,8 @@ export type ProcessConfig = {
     readonly env?: NodeJS.ProcessEnv
     readonly inheritEnv?: boolean
     readonly restart: RestartType
+    readonly launch?: string
+    readonly launchDelay?: number
 }
 
 export type ProcessBuffer = string | React.JSX.Element | React.JSX.Element[]
