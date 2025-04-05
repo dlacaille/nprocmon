@@ -1,8 +1,8 @@
-import React, { useEffect, useMemo } from 'react'
+import React, { useEffect, useMemo, useState } from 'react'
 import useConfig from '../hooks/use-config.js'
 import ProcessName from './process-name.js'
 import useMappings from '../hooks/use-mappings.js'
-import { Frame, Text } from 'react-curse'
+import { Frame, Text, Scrollbar } from 'react-curse'
 import useFocus from '../hooks/use-focus.jsx'
 import useAppSelector from '../hooks/use-app-selector.js'
 import { useProcessManager } from '../hooks/use-process-manager.jsx'
@@ -17,6 +17,7 @@ type Props = {
     readonly width: number
     readonly height: number
     readonly selected: string
+    readonly selectedIndex: number
     setSelectedIndex(value: number | ((value: number) => void)): void
     readonly input?: string[]
 }
@@ -27,11 +28,14 @@ export default function ProcessSelector({
     width,
     height,
     selected,
+    selectedIndex,
     setSelectedIndex,
 }: Props) {
     const config = useConfig()
     const { startProcess, startAllAutostart, stopProcess, stopAll } =
         useProcessManager()
+    const [scrollTop, setScrollTop] = useState(0)
+    const scrollHeight = height - 2
     const { isFocused, focus } = useFocus({ id: 'proc', autoFocus: true })
     const selectedStatus = useAppSelector(
         (state) => state.processes.processes[selected]?.status,
@@ -87,6 +91,15 @@ export default function ProcessSelector({
             })) ?? [],
         [config],
     )
+    const length = processes.length
+
+    useEffect(() => {
+        // Scroll down
+        if (selectedIndex > scrollHeight + scrollTop)
+            setScrollTop(Math.max(selectedIndex - scrollHeight, 0))
+        // Scroll up
+        if (selectedIndex < scrollTop) setScrollTop(selectedIndex)
+    }, [height, scrollTop, selectedIndex])
 
     useMappings(
         {
@@ -120,18 +133,37 @@ export default function ProcessSelector({
             color={isFocused ? 'green' : 'blue'}
         >
             <Frame type="rounded" width={width - 2} height={height - 1}>
-                {processes.map(({ id, config }) => (
-                    <ProcessName
-                        key={id}
-                        config={config}
-                        id={id}
-                        isSelected={selected === id}
-                    />
-                ))}
+                {processes
+                    .slice(scrollTop, scrollHeight + scrollTop + 1)
+                    .map(({ id, config }) => (
+                        <ProcessName
+                            key={id}
+                            config={config}
+                            id={id}
+                            isSelected={selected === id}
+                        />
+                    ))}
             </Frame>
             <Text bold y={0} x={2}>
                 Processes
             </Text>
+            {length > scrollHeight + 1 && (
+                <Text x="100%-1" y={1} height="100%-2">
+                    <Text x={0} y={0}>
+                        ▲
+                    </Text>
+                    <Text x={0} y={1} height="100%-2">
+                        <Scrollbar
+                            offset={scrollTop}
+                            limit={height - 2}
+                            length={length}
+                        />
+                    </Text>
+                    <Text x={0} y="100%-1">
+                        ▼
+                    </Text>
+                </Text>
+            )}
         </Text>
     )
 }

@@ -55,6 +55,7 @@ export default function Main({
                         width={processWidth}
                         height={height - 2}
                         selected={selected}
+                        selectedIndex={selectedIndex}
                         setSelectedIndex={setSelectedIndex}
                         autorun={autorun}
                         deps={deps}
